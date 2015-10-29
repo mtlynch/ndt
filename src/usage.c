@@ -71,6 +71,14 @@ void srv_long_usage(char* info) {
   printf("  -S, --logfacility #F   - specify syslog facility name\n");
   printf("                           Note: this doesn't enable 'syslog'\n");
   printf("  --savewebvalues        - enable web values writing to a separate file\n\n");
+  printf("                           Note: this doesn't enable 'syslog'\n\n");
+  printf("  --tls                  - Use SSL or TLS sockets to conduct the tests.\n");
+  printf("                           Note: This disables all tests which require the \n");
+  printf("                           server to open a socket to the client (MID, SFW),\n");
+  printf("                           and requires the --certificate and --private-key\n");
+  printf("                           options also be set.\n");
+  printf(" --private_key           - the private key (.pem format) to use for TLS/SSL\n");
+  printf(" --certificate           - the certificate (.pem format) to use for TLS/SSL\n");
 #ifdef EXPERIMENTAL_ENABLED
   printf(" Experimental code:\n\n");
   printf("  --avoidsndblockup      - enable code to avoid send buffers blocking in the S2C test\n");
@@ -110,7 +118,6 @@ void srv_long_usage(char* info) {
   printf("  -4, --ipv4             - use IPv4 addresses only\n");
   printf("  -6, --ipv6             - use IPv6 addresses only\n\n");
 #endif
-
   exit(0);
 }
 

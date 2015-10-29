@@ -588,17 +588,21 @@ static void print_10gvar_renamed(const char * old_name,
 
 /**
  * Collect Web100 stats from a snapshot and transmit to a receiver.
- * The transmission is done using a TES_MSG type message and sent to
- * client reachable via the input parameter socket FD.
+ * The transmission is done using a TEST_MSG type message and sent to
+ * client reachable via the Connection
  *
  * @param snap pointer to a tcp_stat_snapshot taken earlier
- * @param ctlsock integer socket file descriptor indicating data recipient
+ * @param ctl Connection indicating data recipient
  * @param agent pointer to a tcp_stat_agent
  * @param count_vars integer number of tcp_stat_variables to get value of
  * @param testoptions the options that determine how the data should be sent
  *
  */
+<<<<<<< HEAD
 int tcp_stat_get_data(tcp_stat_snap** snap, int* testsock, int streamsNum, int ctlsock,
+=======
+int tcp_stat_get_data(tcp_stat_snap* snap, int testsock, Connection* ctl,
+>>>>>>> Adding TLS support to NDT (collapsed2)
                       tcp_stat_agent* agent, int count_vars, const struct testoptions* const testoptions) {
   char line[256];
 #if USE_WEB100
@@ -626,6 +630,7 @@ int tcp_stat_get_data(tcp_stat_snap** snap, int* testsock, int streamsNum, int c
         return (-1);
       }
 
+<<<<<<< HEAD
       // handle an unsuccessful data retrieval
       if ((web100_snap_read(var, snap[t], buf)) != WEB100_ERR_SUCCESS) {
         if (get_debuglvl() > 9) {
@@ -644,6 +649,18 @@ int tcp_stat_get_data(tcp_stat_snap** snap, int* testsock, int streamsNum, int c
         log_print(9, "%s", line);
       }
     }
+=======
+    // assign values and transmit message with all web100 variables to socket
+    // receiver end
+    snprintf(web_vars[i].value, sizeof(web_vars[i].value), "%s",
+             web100_value_to_text(web100_get_var_type(var), buf));
+    /* Why do we atoi after getting as text anyway ?? */
+    snprintf(line, sizeof(line), "%s: %d\n", web_vars[i].name,
+             atoi(web_vars[i].value));
+    send_json_message_any(ctl, TEST_MSG, line, strlen(line),
+                          testoptions->connection_flags, JSON_SINGLE_VALUE);
+    log_print(9, "%s", line);
+>>>>>>> Adding TLS support to NDT (collapsed2)
   }
   log_println(6, "S2C test - Send web100 data to client pid=%d", getpid());
   return (0);
@@ -722,6 +739,16 @@ int tcp_stat_get_data(tcp_stat_snap** snap, int* testsock, int streamsNum, int c
       snprintf(line, sizeof(line), "ECNEnabled: %"PRId32"\n", (val.sv32 == 1) ? 1 : 0);
       send_json_message(ctlsock, TEST_MSG, line, strlen(line), testoptions->connection_flags, JSON_SINGLE_VALUE);
     }
+<<<<<<< HEAD
+=======
+    snprintf(line, sizeof(line), "%s: %s\n",
+                 estats_var_array[j].name, str);
+    send_json_message_any(ctl, TEST_MSG, line, strlen(line), testoptions->connection_flags, JSON_SINGLE_VALUE);
+    log_print(9, "%s", line);
+    free(str);
+    str = NULL;
+  }
+>>>>>>> Adding TLS support to NDT (collapsed2)
 
     /* NagleEnabled -> Nagle */
     type = web10g_find_val(snap[t], "Nagle", &val);
